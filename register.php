@@ -16,16 +16,11 @@
     //Procesamos las solicitudes en metodo post
     if($_SERVER['REQUEST_METHOD']=='POST'){
         //Variables de los inputs
-        $email=$contrasena=$contrasenaRepetida='';
-        if(isset($_POST['email']) && isset($_POST['contrasena']) && isset($_POST['contrasenaRepetida'])){
-            $email = securizar($_POST['email']);
-            $contrasena = securizar($_POST['contrasena']);
-            $contrasenaRepetida = securizar($_POST['contrasenaRepetida']);
-        }else{
-            $errores[]='No puedes hacer eso';
-        }
+        $email=securizar($_POST['email']??'');
+        $contrasena= securizar($_POST['contrasena']??'');
+        $contrasenaRepetida=securizar($_POST['contrasenaRepetida']??'');
         //Procesar la solicitud de registrar a alguin
-        if(isset($_POST['registrar']) && empty($errores)){
+        if(isset($_POST['registrar'])){
             //Vemos si hay algun usuario con este email
             $usuario = $usuarioDb->comprobarUsuario($email);
             //Validaciones de los campos

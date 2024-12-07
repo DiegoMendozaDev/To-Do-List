@@ -5,7 +5,7 @@
     require 'classes/apps/TareaDb.php';
     session_start();
     //Declaracion de variables
-    $session=$token= '';
+    $session=$token='';
     $errores = [];
     $usuarioDb= new UsuarioDb();
     $tareaDb = new TareaDb();
@@ -16,26 +16,23 @@
     if(isset($_COOKIE['recordar'])){
         $token = $_COOKIE['recordar'];
     }
+    verSession($session,$token,$usuarioDb);
+    $session = $_SESSION['usuario'];
     $usuario = $usuarioDb->seleccionarUsuario($session);
     //Procesamos la solicitudes en metodo post
     if($_SERVER['REQUEST_METHOD']=='POST'){
         //Variables de los inputs
-        $nombre=$descripcion=$fechaFin=$idTarea='';
-        if(isset($_POST['nombre']) && isset($_POST['descripcion']) && isset($_POST['fechaFin'])){
-            $nombre = securizar($_POST['nombre']);
-            $descripcion = securizar($_POST['descripcion']);
-            $fechaFin = securizar($_POST['fechaFin']);
-        }elseif(isset($_POST['idTarea'])){
-            $idTarea = securizar($_POST['idTarea']);
-        }elseif(isset($_POST['volver'])){
-        }else{
-            $errores[]='No puedes hacer eso';
-        }
+        $nombre = securizar($_POST['nombre']??'');
+        $descripcion= securizar($_POST['descripcion']??'');
+        $fechaFin=securizar($_POST['fechaFin']??'');
+        $idTarea=securizar($_POST['idTarea']??'');
         //Procesar la solicitud de añadir tarea
-        if(isset($_POST['anadir']) && empty($errores)){
+        if(isset($_POST['anadir'])){
             //Comprobaciones
-            if(!$nombre || !preg_match("/^[a-zA-Z-' ]*$/",$nombre)){
+            if(!$nombre || !preg_match("/^[a-zA-ZáéíóúÁÉÍÓÚñÑ' -]*$/u", $nombre)){
                 $errores[]='Tienes que introducir un nombre valido (solo letras y espacios)';
+            }elseif (strlen($nombre)<1 || strlen($nombre)>50) {
+                $errores[]='El nombre solo puede contener entre 1 y 50 caratéres';
             }elseif(!$fechaFin || date('Y-m-d')>$fechaFin){
                 $errores[]='Tienes que introducir una fecha válida';
             }
@@ -43,7 +40,7 @@
             if(empty($errores)){
                 $tareaDb->anadirTarea($nombre,$descripcion,$fechaFin,NULL,$usuario->getIdUsuario());
             }
-        }elseif(isset($_POST['eliminar']) && empty($errores)){
+        }elseif(isset($_POST['eliminar'])){
             $tareaDb->eliminarTarea($idTarea);
         }elseif(isset($_POST['editar'])){
             $tarea = $tareaDb->seleccionarTarea($idTarea);
@@ -51,13 +48,9 @@
             $descripcionAc = $tarea->getDescripcion();
             $fechaFinAc = $tarea->getFechaFin();
         }elseif(isset($_POST['actualizar'])){
-            echo 'hola';
-            echo $idTarea;
             $tareaDb->editarTarea($idTarea,$nombre,$descripcion,$fechaFin);
         }
     }
-    verSession($session,$token,$usuarioDb);
-    $session = $_SESSION['usuario'];
     $todasTareas = $tareaDb->seleccionarTareasUsuarios($usuario->getIdUsuario());
 ?>
 <!DOCTYPE html>

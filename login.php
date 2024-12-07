@@ -15,15 +15,10 @@
 
     if($_SERVER['REQUEST_METHOD']=='POST'){
         //Variables de los inputs
-        $email=$contrasena='';
-        if(isset($_POST['email']) && isset($_POST['contrasena'])){
-            $email = securizar($_POST['email']);
-            $contrasena = securizar($_POST['contrasena']);
-        }else{
-            $errores[]= 'No puedes hacer eso';
-        }
+        $email=securizar($_POST['email']??'');
+        $contrasena=securizar($_POST['contrasena']??'');
 
-        if(isset($_POST['entrar']) && empty($errores)){
+        if(isset($_POST['entrar'])){
             //Recogemos el usuario
             $usuario = $usuarioDb->comprobarUsuario($email);
             //Comprobaciones
