@@ -64,6 +64,7 @@
     <header>
         <p>User: <?=$session?></p>
         <a href="logoff.php">logoff</a>
+        <button type="submit"><a href="crearGrupo.php">Crear grupo</a></button>
         <hr>
     </header>
     <nav></nav>
