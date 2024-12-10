@@ -1,6 +1,7 @@
 <?php
 require 'functions/securizar.php';
 require 'functions/verSession.php';
+require 'classes/apps/UsuarioDb.php';
 require 'classes/apps/GrupoDb.php';
 require 'classes/apps/UsuariosGruposDb.php';
 session_start();
@@ -8,7 +9,7 @@ session_start();
 $session = $token = '';
 $errores = [];
 $usuarioDb = new UsuarioDb();
-$gruposDb = new GrupoBd();
+$gruposDb = new GrupoDb();
 $usuariosGruposDb = new UsuariosGruposDb();
 //Comprobamos si hay unsa sesión o un token
 if (isset($_SESSION['usuario'])) {
@@ -29,8 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $errores[] = 'El nombre del grupo tiene que tener entre 3 y 50 caracteres';
         } elseif (!$nombre || !preg_match("/^[a-zA-ZáéíóúÁÉÍÓÚñÑ' -]*$/u", $nombre)) {
             $errores[] = 'Tienes que introducir un nombre valido (solo letras y espacios)';
-        }elseif(!$grupo){
-            $errores[] ='Ya hay un grupo con ese nombre';
+        } elseif ($grupo) {
+            $errores[] = 'Ya hay un grupo con ese nombre';
         }
         if (empty($errores)) {
             $gruposDb->anadirGrupo($nombre);
@@ -57,11 +58,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <article>
             <fieldset>
 
-                <head>Crear grupo</head>
+                <head><h2>Add Group</h2></head>
                 <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-                    <label><input type="text" name="nombre" placeholder="Group name"></label>
-                    <input type="submit" value="Crear" name='crear'>
+                    <label><input type="text" name="nombre" placeholder="Group name" required></label>
+                    <input type="submit" value="Crear" name='Add'>
                 </form>
+                <a href="index.php">Back</a>
+                <?php foreach($errores as $error):?>
+                    <?=$error?>
+                <?php endforeach?>
             </fieldset>
         </article>
     </main>

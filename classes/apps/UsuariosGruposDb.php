@@ -24,7 +24,7 @@ class UsuariosGruposDb extends Conex
     }
     public function anadirUsuariosGrupos($idUsuario, $idGrupo, $admin)
     {
-        $query = 'INSERT INTO usuarios_grupos(id_usuario,id_grupo,admin) VALUES (:idUsuario,:idGrupo,:admin)';
+        $query = 'INSERT INTO usuarios_grupos(idUsuario,idGrupo,admin) VALUES (:idUsuario,:idGrupo,:admin)';
         try {
             $insertar = $this->conexBd->prepare($query);
             $insertar->execute([':idUsuario' => $idUsuario, ':idGrupo' => $idGrupo, ':admin' => $admin]);
@@ -34,7 +34,7 @@ class UsuariosGruposDb extends Conex
     }
     public function eliminarUsuariosGrupos($idUsuario, $idGrupo)
     {
-        $query = 'DELETE FROM usuarios_grupos WHERE id_usuario=:idUsuario AND idGrupo=:idGrupo';
+        $query = 'DELETE FROM usuarios_grupos WHERE idUsuario=:idUsuario AND idGrupo=:idGrupo';
         try {
             $eliminar = $this->conexBd->prepare($query);
             $eliminar->execute([':idUsuario' => $idUsuario, ':idGrupo' => $idGrupo]);

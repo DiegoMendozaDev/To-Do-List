@@ -1,6 +1,6 @@
 <?php
 
-class GrupoBd extends Conex
+class GrupoDb extends Conex
 {
 
     private $idGrupo;

@@ -7,6 +7,9 @@ class UsuarioDb extends Conex
     private $email;
     private $contrasena;
     private $token;
+    private $nombre;
+    private $foto;
+    private $descripcion;
 
     public function __construct()
     {
