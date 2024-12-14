@@ -30,6 +30,10 @@ class TareaDb extends Conex
     {
         return $this->idTarea;
     }
+    public function getIdUsuario()
+    {
+        return $this->idUsuario;
+    }
 
     public function anadirTarea($nombre, $descripcion, $fechaFin, $idGrupo, $idUsuario)
     {
@@ -57,6 +61,16 @@ class TareaDb extends Conex
         try {
             $actualizar = $this->conexBd->prepare($query);
             $actualizar->execute([':idTarea' => $idTarea, ':nombre' => $nombre, ':descripcion' => $descripcion, ':fechaFin' => $fechaFin,]);
+        } catch (PDOException $e) {
+            echo 'Error al actualizar el nombre del grupo: ' . $e->getMessage() . ', en la linea: ' . $e->getLine() . ', en el archivo: ' . $e->getFile();
+        }
+    }
+    public function editarTareaGrupo($idTarea, $nombre, $descripcion, $fechaFin,$idUsuario)
+    {
+        $query = 'UPDATE tarea SET nombre=:nombre,descripcion=:descripcion,fechaFin=:fechaFin WHERE idTarea=:idTarea';
+        try {
+            $actualizar = $this->conexBd->prepare($query);
+            $actualizar->execute([':idTarea' => $idTarea, ':nombre' => $nombre, ':descripcion' => $descripcion, ':fechaFin' => $fechaFin,':idUsuario'=>$idUsuario]);
         } catch (PDOException $e) {
             echo 'Error al actualizar el nombre del grupo: ' . $e->getMessage() . ', en la linea: ' . $e->getLine() . ', en el archivo: ' . $e->getFile();
         }

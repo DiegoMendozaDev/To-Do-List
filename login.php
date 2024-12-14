@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if (isset($_POST['entrar'])) {
         //Recogemos el usuario
-        $usuario = $usuarioDb->comprobarUsuario($email);
+        $usuario = $usuarioDb->seleccionarUsuario($email);
         //Comprobaciones
         if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $errores[] = 'Tienes que introducir un email válido.';

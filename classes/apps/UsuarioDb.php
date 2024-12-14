@@ -108,12 +108,12 @@ class UsuarioDb extends Conex
             echo 'Error al seleccionar el grupo: ' . $e->getMessage() . ', en la linea: ' . $e->getLine() . ', en el archivo: ' . $e->getFile();
         }
     }
-    public function comprobarUsuario($email)
+    public function seleccionarUsuarioId($idUsuario)
     {
-        $query = 'SELECT * FROM usuario WHERE email=:email';
+        $query = 'SELECT * FROM usuario WHERE idUsuario=:idUsuario';
         try {
             $selecionar = $this->conexBd->prepare($query);
-            $selecionar->execute([':email' => $email]);
+            $selecionar->execute([':idUsuario' => $idUsuario]);
             $selecionar->setFetchMode(PDO::FETCH_CLASS, 'UsuarioDb');
             $usuario = $selecionar->fetch();
             return $usuario;

@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     //Procesar la solicitud de registrar a alguin
     if (isset($_POST['registrar'])) {
         //Vemos si hay algun usuario con este email
-        $usuario = $usuarioDb->comprobarUsuario($email);
+        $usuario = $usuarioDb->seleccionarUsuario($email);
         //Validaciones de los campos
         if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $errores[] = 'Tienes que introducir un email válido';
