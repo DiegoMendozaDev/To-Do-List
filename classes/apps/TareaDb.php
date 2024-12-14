@@ -87,9 +87,21 @@ class TareaDb extends Conex
             echo 'Error al seleccionar el grupo: ' . $e->getMessage() . ', en la linea: ' . $e->getLine() . ', en el archivo: ' . $e->getFile();
         }
     }
+    public function seleccionarTareasGrupo($idGrupo)
+    {
+        $query = 'SELECT * FROM tarea WHERE idGrupo=:idGrupo AND idUsuario IS NULL';
+        try {
+            $selecionar = $this->conexBd->prepare($query);
+            $selecionar->execute([':idGrupo' => $idGrupo]);
+            $selecionar->setFetchMode(PDO::FETCH_CLASS, 'TareaDb');
+            return $selecionar;
+        } catch (PDOException $e) {
+            echo 'Error al seleccionar el grupo: ' . $e->getMessage() . ', en la linea: ' . $e->getLine() . ', en el archivo: ' . $e->getFile();
+        }
+    }
     public function seleccionarTarea($idTarea)
     {
-        $query = 'SELECT * FROM tarea WHERE idTarea=:idTarea AND idGrupo IS NULL';
+        $query = 'SELECT * FROM tarea WHERE idTarea=:idTarea AND idUsuario IS NULL';
         try {
             $selecionar = $this->conexBd->prepare($query);
             $selecionar->execute([':idTarea' => $idTarea]);

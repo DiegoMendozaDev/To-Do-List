@@ -1,5 +1,5 @@
 <?php
-require 'classes/bds/Conex.php';
+require 'classes/DB/Conex.php';
 class UsuarioDb extends Conex
 {
 

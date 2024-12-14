@@ -66,7 +66,7 @@ class UsuariosGruposDb extends Conex
     }
     public function seleccionarGruposUsuarios($idUsuario)
     {
-        $query = 'SELECT * FROM usuarios_grupos WHERE idUsuario=:idUsuario';
+        $query = 'SELECT * FROM usuarios_grupos, grupo WHERE grupo.idGrupo=usuarios_grupos.idGrupo AND usuarios_grupos.idUsuario = :idUsuario';
         try {
             $selecionar = $this->conexBd->prepare($query);
             $selecionar->execute([':idUsuario' => $idUsuario]);

@@ -3,18 +3,23 @@ require 'functions/securizar.php';
 require 'functions/verSession.php';
 require 'classes/apps/UsuarioDb.php';
 require 'classes/apps/TareaDb.php';
+require 'classes/apps/UsuariosGruposDb.php';
 session_start();
 //Declaracion de variables
 $session = $token = '';
 $errores = [];
 $usuarioDb = new UsuarioDb();
 $tareaDb = new TareaDb();
+$usuariosGruposDb = new UsuariosGruposDb();
 //Comprobamos si hay unsa sesión o un token
 if (isset($_SESSION['usuario'])) {
     $session = $_SESSION['usuario'];
 }
 if (isset($_COOKIE['recordar'])) {
     $token = $_COOKIE['recordar'];
+}
+if(isset($_SESSION['grupo'])){
+    unset($_SESSION['grupo']);
 }
 verSession($session, $token, $usuarioDb);
 $session = $_SESSION['usuario'];
@@ -26,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $descripcion = securizar($_POST['descripcion'] ?? '');
     $fechaFin = securizar($_POST['fechaFin'] ?? '');
     $idTarea = securizar($_POST['idTarea'] ?? '');
+    $grupoNombre = securizar($_POST['grupoNombre'] ?? '');
     //Procesar la solicitud de añadir tarea
     if (isset($_POST['anadir'])) {
         //Comprobaciones
@@ -49,9 +55,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $fechaFinAc = $tarea->getFechaFin();
     } elseif (isset($_POST['actualizar'])) {
         $tareaDb->editarTarea($idTarea, $nombre, $descripcion, $fechaFin);
+    } elseif (isset($_POST['irGrupo'])){
+        $_SESSION['grupo']=$grupoNombre;
+        header('Location: grupo.php');
     }
 }
+$todosGrupos = $usuariosGruposDb->seleccionarGruposUsuarios($usuario->getIdUsuario());
 $todasTareas = $tareaDb->seleccionarTareasUsuarios($usuario->getIdUsuario());
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -65,8 +76,16 @@ $todasTareas = $tareaDb->seleccionarTareasUsuarios($usuario->getIdUsuario());
 <body>
     <header>
         <p>User: <?= $session ?></p>
+        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+            <select name="grupoNombre">
+                <?php while($grupo = $todosGrupos->fetch()):?>
+                    <option value="<?=$grupo->getIdGrupo()?>"><?php echo $grupo->nombre?></option>
+                <?php endwhile?>
+            </select>
+            <input type="submit" name="irGrupo" value='Enter'>
+        </form>
+        <button type="submit"><a href="crearGrupo.php">Create Group</a></button>
         <a href="logoff.php">logoff</a>
-        <button type="submit"><a href="crearGrupo.php">Crear grupo</a></button>
         <hr>
     </header>
     <nav></nav>
@@ -81,7 +100,7 @@ $todasTareas = $tareaDb->seleccionarTareasUsuarios($usuario->getIdUsuario());
                     <textarea name="descripcion" placeholder="Description"><?= $descripcionAc ?? NULL ?></textarea>
                     <input type="date" name="fechaFin" min="<?= date('Y-m-d') ?>" value="<?= $fechaFinAc ?? date('Y-m-d') ?>" required>
                     <?php if (!isset($_POST['editar'])): ?>
-                        <input type="submit" value="Add" name="anadir">
+                        <input type="submit" value='Add' name="anadir">
                     <?php else: ?>
                         <input type="submit" value="Update" name='actualizar'>
                         <input type="hidden" name="idTarea" value='<?= $idTarea ?>'>

@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     //Variables de los inpurs
     $nombre = securizar($_POST['nombre'] ?? '');
     $grupo = $gruposDb->seleccionarGrupo($nombre);
-    if (isset($_POST['crear'])) {
+    if (isset($_POST['add'])) {
         if (strlen($nombre) > 50 || strlen($nombre) < 3) {
             $errores[] = 'El nombre del grupo tiene que tener entre 3 y 50 caracteres';
         } elseif (!$nombre || !preg_match("/^[a-zA-ZáéíóúÁÉÍÓÚñÑ' -]*$/u", $nombre)) {
@@ -34,6 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $errores[] = 'Ya hay un grupo con ese nombre';
         }
         if (empty($errores)) {
+
             $gruposDb->anadirGrupo($nombre);
             $grupo = $gruposDb->seleccionarGrupo($nombre);
             $usuariosGruposDb->anadirUsuariosGrupos($usuario->getIdUsuario(), $grupo->getIdGrupo(), true);
@@ -61,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <head><h2>Add Group</h2></head>
                 <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                     <label><input type="text" name="nombre" placeholder="Group name" required></label>
-                    <input type="submit" value="Crear" name='Add'>
+                    <input type="submit" name='add' value='create'>
                 </form>
                 <a href="index.php">Back</a>
                 <?php foreach($errores as $error):?>

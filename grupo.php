@@ -3,13 +3,18 @@ require 'functions/securizar.php';
 require 'functions/verSession.php';
 require 'classes/apps/UsuarioDb.php';
 require 'classes/apps/TareaDb.php';
+require 'classes/apps/GrupoDb.php';
 session_start();
 //Declaracion de variables
 $session = $token = '';
 $errores = [];
 $usuarioDb = new UsuarioDb();
 $tareaDb = new TareaDb();
+$grupoDb = new GrupoDb();
 //Comprobamos si hay unsa sesión o un token
+if(!isset($_SESSION['grupo'])||!$_SESSION['grupo']){
+   header('Location: index.php');
+}
 if (isset($_SESSION['usuario'])) {
     $session = $_SESSION['usuario'];
 }
@@ -19,6 +24,7 @@ if (isset($_COOKIE['recordar'])) {
 verSession($session, $token, $usuarioDb);
 $session = $_SESSION['usuario'];
 $usuario = $usuarioDb->seleccionarUsuario($session);
+$grupo = $grupoDb->seleccionarGrupo($_SESSION['grupo']);
 //Procesamos la solicitudes en metodo post
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     //Variables de los inputs
@@ -39,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         //Si no hay ningun error añadimos la tarea
         if (empty($errores)) {
-            $tareaDb->anadirTarea($nombre, $descripcion, $fechaFin, NULL, $usuario->getIdUsuario());
+            $tareaDb->anadirTarea($nombre, $descripcion, $fechaFin, $grupo->getIdGrupo(), NULL);
         }
     } elseif (isset($_POST['eliminar'])) {
         $tareaDb->eliminarTarea($idTarea);
@@ -57,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $tareaDb->editarTareaGrupo($idTarea, $nombre, $descripcion, $fechaFin,$usuarioNew);
     }
 }
-$todasTareas = $tareaDb->seleccionarTareasUsuarios($usuario->getIdUsuario());
+$todasTareas = $tareaDb->seleccionarTareasGrupo($grupo->getIdGrupo());
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -72,7 +78,7 @@ $todasTareas = $tareaDb->seleccionarTareasUsuarios($usuario->getIdUsuario());
     <header>
         <p>User: <?= $session ?></p>
         <a href="logoff.php">logoff</a>
-        <button type="submit"><a href="crearGrupo.php">Crear grupo</a></button>
+        <a href="index.php">back</a>
         <hr>
     </header>
     <nav></nav>
