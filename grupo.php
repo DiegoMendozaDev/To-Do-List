@@ -64,6 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 $todasTareas = $tareaDb->seleccionarTareasGrupo($grupo->getIdGrupo());
+$todasTareasUsuario = $tareaDb->seleccionarTareasGrupoUsuarios($grupo->getIdGrupo(),$usaurio->getIdUsuario());
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -126,6 +127,22 @@ $todasTareas = $tareaDb->seleccionarTareasGrupo($grupo->getIdGrupo());
                 </form>
             <?php endwhile; ?>
         </article>
+        <?php if($todasTareasUsuario):?>
+            <article>
+                <header>
+                    <h2>To-do List User</h2>
+                </header>
+                <?php while ($tarea = $todasTareasUsuario->fetch()): ?>
+                    <input type="checkbox" name="completada">
+                    <?= $tarea->getNombre() ?> - <?= $tarea->getDescripcion() ?> - <?= $tarea->getFechaFin() ?>
+                    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+                        <button type="submit" name="eliminar">Eliminar</button>
+                        <button type="submit" name="editar">editar</button>
+                        <input type="hidden" name="idTarea" value='<?= $tarea->getIdTarea() ?>'>
+                    </form>
+                <?php endwhile; ?>
+            </article>
+        <?php endif?>
     </main>
     <footer></footer>
 </body>

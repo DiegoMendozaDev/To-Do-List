@@ -53,22 +53,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/estilos.css" type='text/css'>
     <title>Login</title>
 </head>
 
 <body>
-
-    <head></head>
+    <header><h1>Welcome To To-Do List</h1></header>
     <nav></nav>
     <main>
         <fieldset>
+            <legend>Login</legend>
             <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
-                <label><input type="email" name="email" placeholder="Email" required></label>
-                <label><input type="password" name="contrasena" placeholder="Password" required></label>
-                recordar: <input type="checkbox" name="recordar">
-                <input type="submit" value="Sing in" name="entrar">
+                <label><p><input type="email" name="email" placeholder="Email" required></p></label>
+                <label><p><input type="password" name="contrasena" placeholder="Password" required></p></label>
+                <p>recordar: <input type="checkbox" name="recordar"></p>
+                <input type="submit" value="Sing in" name="entrar" style="margin-right: 2vh;">
+                <a href="register.php">Sing up</a>
             </form>
-            <a href="register.php">Sing up</a>
             <?php if (!empty($errores)): ?>
                 <?php foreach ($errores as $error): ?>
                     <p class='errores'>*<?= $error ?></p>

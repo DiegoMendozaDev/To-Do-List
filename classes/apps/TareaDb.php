@@ -65,12 +65,12 @@ class TareaDb extends Conex
             echo 'Error al actualizar el nombre del grupo: ' . $e->getMessage() . ', en la linea: ' . $e->getLine() . ', en el archivo: ' . $e->getFile();
         }
     }
-    public function editarTareaGrupo($idTarea, $nombre, $descripcion, $fechaFin,$idUsuario)
+    public function editarTareaGrupo($idTarea, $nombre, $descripcion, $fechaFin, $idUsuario)
     {
         $query = 'UPDATE tarea SET nombre=:nombre,descripcion=:descripcion,fechaFin=:fechaFin WHERE idTarea=:idTarea';
         try {
             $actualizar = $this->conexBd->prepare($query);
-            $actualizar->execute([':idTarea' => $idTarea, ':nombre' => $nombre, ':descripcion' => $descripcion, ':fechaFin' => $fechaFin,':idUsuario'=>$idUsuario]);
+            $actualizar->execute([':idTarea' => $idTarea, ':nombre' => $nombre, ':descripcion' => $descripcion, ':fechaFin' => $fechaFin, ':idUsuario' => $idUsuario]);
         } catch (PDOException $e) {
             echo 'Error al actualizar el nombre del grupo: ' . $e->getMessage() . ', en la linea: ' . $e->getLine() . ', en el archivo: ' . $e->getFile();
         }
@@ -108,6 +108,18 @@ class TareaDb extends Conex
             $selecionar->setFetchMode(PDO::FETCH_CLASS, 'TareaDb');
             $tarea = $selecionar->fetch();
             return $tarea;
+        } catch (PDOException $e) {
+            echo 'Error al seleccionar el grupo: ' . $e->getMessage() . ', en la linea: ' . $e->getLine() . ', en el archivo: ' . $e->getFile();
+        }
+    }
+    public function seleccionarTareasGrupoUsuarios($idGrupo,$idUsuario)
+    {
+        $query = 'SELECT * FROM tarea WHERE idGrupo=:idGrupo AND idUsuario=:idUsuario';
+        try {
+            $selecionar = $this->conexBd->prepare($query);
+            $selecionar->execute([':idGrupo' => $idGrupo, ':idUsuario'=>$idUsuario]);
+            $selecionar->setFetchMode(PDO::FETCH_CLASS, 'TareaDb');
+            return $selecionar;
         } catch (PDOException $e) {
             echo 'Error al seleccionar el grupo: ' . $e->getMessage() . ', en la linea: ' . $e->getLine() . ', en el archivo: ' . $e->getFile();
         }

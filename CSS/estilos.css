@@ -1,0 +1,28 @@
+fieldset{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+fieldset:hover {
+    border-color: #007BFF; /* Cambia el color al pasar el mouse */
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2); /* Sombra animada */
+}
+legend {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #007BFF;
+}
+body{
+    Font-family: Candara, Calibri, Segoe, Segoe UI, Optima, Arial, sans-serif;
+}
+header{
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
