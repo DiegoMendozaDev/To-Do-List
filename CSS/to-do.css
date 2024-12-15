@@ -1,0 +1,25 @@
+/* header */
+header{
+    display: flex;
+    justify-content: space-around;
+}
+/* Fieldset styles */
+fieldset {
+
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+fieldset:hover {
+    border-color: #007BFF;
+    /* Cambia el color al pasar el mouse */
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+    /* Sombra animada */
+}
+
+/* body */
+body {
+    Font-family: Candara, Calibri, Segoe, Segoe UI, Optima, Arial, sans-serif;
+}

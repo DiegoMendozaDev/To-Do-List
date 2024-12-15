@@ -18,7 +18,7 @@ if (isset($_SESSION['usuario'])) {
 if (isset($_COOKIE['recordar'])) {
     $token = $_COOKIE['recordar'];
 }
-if(isset($_SESSION['grupo'])){
+if (isset($_SESSION['grupo'])) {
     unset($_SESSION['grupo']);
 }
 verSession($session, $token, $usuarioDb);
@@ -55,8 +55,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $fechaFinAc = $tarea->getFechaFin();
     } elseif (isset($_POST['actualizar'])) {
         $tareaDb->editarTarea($idTarea, $nombre, $descripcion, $fechaFin);
-    } elseif (isset($_POST['irGrupo'])){
-        $_SESSION['grupo']=$grupoNombre;
+    } elseif (isset($_POST['irGrupo'])) {
+        $_SESSION['grupo'] = $grupoNombre;
         header('Location: grupo.php');
     }
 }
@@ -70,24 +70,25 @@ $todasTareas = $tareaDb->seleccionarTareasUsuarios($usuario->getIdUsuario());
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/to-do.css" type='text/css'>
     <title>To-do</title>
 </head>
 
 <body>
     <header>
-        <p>User: <?= $session ?></p>
+        <p>Hi, <?= $usuario->getNombre() ?></p>
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <select name="grupoNombre">
-                <?php while($grupo = $todosGrupos->fetch()):?>
-                    <option value="<?=$grupo->getIdGrupo()?>"><?php echo $grupo->nombre?></option>
-                <?php endwhile?>
+                <?php while ($grupo = $todosGrupos->fetch()): ?>
+                    <option value="<?= $grupo->getIdGrupo() ?>"><?php echo $grupo->nombre ?></option>
+                <?php endwhile ?>
             </select>
             <input type="submit" name="irGrupo" value='Enter'>
         </form>
-        <button type="submit"><a href="crearGrupo.php">Create Group</a></button>
+        <a href="crearGrupo.php">Create Group</a>
         <a href="logoff.php">logoff</a>
-        <hr>
     </header>
+    <hr>
     <nav></nav>
     <main>
         <article>

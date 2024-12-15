@@ -4,10 +4,10 @@ class UsuarioDb extends Conex
 {
 
     private $idUsuario;
+    private $nombre;
     private $email;
     private $contrasena;
     private $token;
-    private $nombre;
     private $foto;
     private $descripcion;
 
@@ -31,13 +31,17 @@ class UsuarioDb extends Conex
     {
         return $this->token;
     }
-
-    public function anadirUsuario($email, $contrasena)
+    public function getNombre()
     {
-        $query = 'INSERT INTO usuario(email,contraseña) VALUES (:email,:contrasena)';
+        return $this->nombre;
+    }
+
+    public function anadirUsuario($nombre,$email, $contrasena)
+    {
+        $query = 'INSERT INTO usuario(nombre,email,contraseña) VALUES (:nombre,:email,:contrasena)';
         try {
             $insertar = $this->conexBd->prepare($query);
-            $insertar->execute([':email' => $email, ':contrasena' => $contrasena]);
+            $insertar->execute([':nombre'=>$nombre,':email' => $email, ':contrasena' => $contrasena]);
         } catch (PDOException $e) {
             echo 'Error al insertar usuario en la base de datos: ' . $e->getMessage() . ', en la linea: ' . $e->getLine() . ', en el archivo: ' . $e->getFile();
         }
