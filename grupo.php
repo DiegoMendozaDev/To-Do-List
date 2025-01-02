@@ -12,8 +12,8 @@ $usuarioDb = new UsuarioDb();
 $tareaDb = new TareaDb();
 $grupoDb = new GrupoDb();
 //Comprobamos si hay unsa sesión o un token
-if(!isset($_SESSION['grupo'])||!$_SESSION['grupo']){
-   header('Location: index.php');
+if (!isset($_SESSION['grupo']) || !$_SESSION['grupo']) {
+    header('Location: index.php');
 }
 if (isset($_SESSION['usuario'])) {
     $session = $_SESSION['usuario'];
@@ -54,17 +54,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $nombreAc = $tarea->getNombre();
         $descripcionAc = $tarea->getDescripcion();
         $fechaFinAc = $tarea->getFechaFin();
-        if($tarea->getIdUsuario()){
+        if ($tarea->getIdUsuario()) {
             $idUsuario = $tarea->getIdUsuario();
             $usuarioNew = $usuarioDb->seleccionarUsuarioId($idUsuario);
-            $usuarioAc =$usaurio->getEmail();
+            $usuarioAc = $usuario->getEmail();
         }
     } elseif (isset($_POST['actualizar'])) {
-        $tareaDb->editarTareaGrupo($idTarea, $nombre, $descripcion, $fechaFin,$usuarioNew);
+        $tareaDb->editarTareaGrupo($idTarea, $nombre, $descripcion, $fechaFin, $usuarioNew);
     }
 }
 $todasTareas = $tareaDb->seleccionarTareasGrupo($grupo->getIdGrupo());
-$todasTareasUsuario = $tareaDb->seleccionarTareasGrupoUsuarios($grupo->getIdGrupo(),$usaurio->getIdUsuario());
+$todasTareasUsuario = $tareaDb->seleccionarTareasGrupoUsuarios($grupo->getIdGrupo(), $usuario->getIdUsuario());
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -72,16 +72,18 @@ $todasTareasUsuario = $tareaDb->seleccionarTareasGrupoUsuarios($grupo->getIdGrup
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/to-do.css" type='text/css'>
     <title>Grupo</title>
 </head>
 
 <body>
     <header>
         <p>User: <?= $session ?></p>
-        <a href="logoff.php">logoff</a>
-        <a href="index.php">back</a>
-        <hr>
+        <button type="submit" name="anadirUsuario" class="button">Add User</button>
+        <a href="index.php" id="style-4">back</a>
+        <a href="logoff.php" id="style-4">logoff</a>
     </header>
+    <hr>
     <nav></nav>
     <main>
         <article>
@@ -127,7 +129,7 @@ $todasTareasUsuario = $tareaDb->seleccionarTareasGrupoUsuarios($grupo->getIdGrup
                 </form>
             <?php endwhile; ?>
         </article>
-        <?php if($todasTareasUsuario):?>
+        <?php if ($todasTareasUsuario): ?>
             <article>
                 <header>
                     <h2>To-do List User</h2>
@@ -142,7 +144,7 @@ $todasTareasUsuario = $tareaDb->seleccionarTareasGrupoUsuarios($grupo->getIdGrup
                     </form>
                 <?php endwhile; ?>
             </article>
-        <?php endif?>
+        <?php endif ?>
     </main>
     <footer></footer>
 </body>

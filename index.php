@@ -46,6 +46,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (empty($errores)) {
             $tareaDb->anadirTarea($nombre, $descripcion, $fechaFin, NULL, $usuario->getIdUsuario());
         }
+        header('Location: ' . $_SERVER['PHP_SELF']);
+        exit;
     } elseif (isset($_POST['eliminar'])) {
         $tareaDb->eliminarTarea($idTarea);
     } elseif (isset($_POST['editar'])) {
@@ -53,15 +55,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $nombreAc = $tarea->getNombre();
         $descripcionAc = $tarea->getDescripcion();
         $fechaFinAc = $tarea->getFechaFin();
+        header('Location: ' . $_SERVER['PHP_SELF']);
+        exit;
     } elseif (isset($_POST['actualizar'])) {
         $tareaDb->editarTarea($idTarea, $nombre, $descripcion, $fechaFin);
     } elseif (isset($_POST['irGrupo'])) {
         $_SESSION['grupo'] = $grupoNombre;
         header('Location: grupo.php');
+        exit;
+    } elseif (isset($_POST['completada'])) {
+        $completada = $_POST['completada'];
+        if ($completada) {
+            $tareaDb->completarTarea($idTarea);
+        } else {
+            $tareaDb->descompletarTarea($idTarea);
+        }
+        header('Location: ' . $_SERVER['PHP_SELF']);
+        exit;
     }
 }
 $todosGrupos = $usuariosGruposDb->seleccionarGruposUsuarios($usuario->getIdUsuario());
 $todasTareas = $tareaDb->seleccionarTareasUsuarios($usuario->getIdUsuario());
+
 
 ?>
 <!DOCTYPE html>
@@ -83,32 +98,45 @@ $todasTareas = $tareaDb->seleccionarTareasUsuarios($usuario->getIdUsuario());
                     <option value="<?= $grupo->getIdGrupo() ?>"><?php echo $grupo->nombre ?></option>
                 <?php endwhile ?>
             </select>
-            <input type="submit" name="irGrupo" value='Enter'>
+            <button type="submit" name="irGrupo" class="button">Enter</button>
         </form>
-        <a href="crearGrupo.php">Create Group</a>
-        <a href="logoff.php">logoff</a>
+        <a href="crearGrupo.php" id="style-4">Create Group</a>
+        <a href="editPerfil.php" id="style-4">Edit profile</a>
+        <a href="logoff.php" id="style-4">logoff</a>
     </header>
     <hr>
     <nav></nav>
     <main>
-        <article>
+        <article class="task">
             <header>
                 <h2>Add task</h2>
             </header>
             <fieldset>
                 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
-                    <input type="text" name="nombre" placeholder="Name" value="<?= $nombreAc ?? NULL ?>" required>
-                    <textarea name="descripcion" placeholder="Description"><?= $descripcionAc ?? NULL ?></textarea>
-                    <input type="date" name="fechaFin" min="<?= date('Y-m-d') ?>" value="<?= $fechaFinAc ?? date('Y-m-d') ?>" required>
-                    <?php if (!isset($_POST['editar'])): ?>
-                        <input type="submit" value='Add' name="anadir">
-                    <?php else: ?>
-                        <input type="submit" value="Update" name='actualizar'>
-                        <input type="hidden" name="idTarea" value='<?= $idTarea ?>'>
+                    <div class="coolinput">
+                        <label for="input" class="text">Name:</label>
+                        <input type="text" name="nombre" placeholder="Write here..." class="input" value="<?= $nombreAc ?? NULL ?>" required>
+                    </div>
+                    <div class="coolinput">
+                        <label for="input" class="text">Description:</label>
+                        <textarea name="descripcion" placeholder="Write here..."><?= $descripcionAc ?? NULL ?></textarea>
+                    </div>
+                    <div class="coolinput">
+                        <label for="input" class="text">Create date</label>
+                        <input type="date" name="fechaFin" class="input" min="<?= date('Y-m-d') ?>" value="<?= $fechaFinAc ?? date('Y-m-d') ?>" required>
+                    </div>
+                    <div style="display: flex;">
+                        <?php if (!isset($_POST['editar'])): ?>
+                            <button type="submit" name="anadir" class="button">Add</button>
+
+                        <?php else: ?>
+                            <button type="submit" name='actualizar' class="button">Update</button>
+                            <input type="hidden" name="idTarea" value='<?= $idTarea ?>'>
                 </form>
                 <form action="" method="post">
-                    <input type="submit" value="Back" name='volver'>
+                    <button type="submit" name='volver' class="button">Back</button>
                 </form>
+                </div>
             <?php endif ?>
             </form>
             <?php if (!empty($errores)): ?>
@@ -124,13 +152,22 @@ $todasTareas = $tareaDb->seleccionarTareasUsuarios($usuario->getIdUsuario());
                 <h2>To-do List</h2>
             </header>
             <?php while ($tarea = $todasTareas->fetch()): ?>
-                <input type="checkbox" name="completada">
-                <?= $tarea->getNombre() ?> - <?= $tarea->getDescripcion() ?> - <?= $tarea->getFechaFin() ?>
-                <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-                    <button type="submit" name="eliminar">Eliminar</button>
-                    <button type="submit" name="editar">editar</button>
-                    <input type="hidden" name="idTarea" value='<?= $tarea->getIdTarea() ?>'>
-                </form>
+                <div style="display: flex;">
+                    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+                        <div class="checkbox">
+                            <input type="hidden" name="completada" value="0">
+                            <input type="checkbox" name="completada" value="1" onchange="this.form.submit()" <?= $tarea->getCompletada() ? 'checked' : '' ?>>
+                            <label for=""><?= $tarea->getNombre() ?> - <?= $tarea->getDescripcion() ?> - <?= $tarea->getFechaFin() ?></label>
+                        </div>
+                        <input type="hidden" name="idTarea" value="<?= $tarea->getIdTarea() ?>">
+                    </form>
+                    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+                        <button type="submit" name="eliminar" class="elim"><img src="Css/delete.png"></button>
+                        <button type="submit" name="editar" class="button"><img src="Css/edit.png"></button>
+                        <input type="hidden" name="idTarea" value='<?= $tarea->getIdTarea() ?>'>
+                    </form>
+                </div>
+                <br>
             <?php endwhile; ?>
         </article>
     </main>

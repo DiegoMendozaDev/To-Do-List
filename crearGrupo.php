@@ -59,15 +59,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <article>
             <fieldset>
 
-                <head><h2>Add Group</h2></head>
+                <head>
+                    <h2>Add Group</h2>
+                </head>
                 <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                     <label><input type="text" name="nombre" placeholder="Group name" required></label>
                     <input type="submit" name='add' value='create'>
                 </form>
                 <a href="index.php">Back</a>
-                <?php foreach($errores as $error):?>
-                    <?=$error?>
-                <?php endforeach?>
+                <?php foreach ($errores as $error): ?>
+                    <?= $error ?>
+                <?php endforeach ?>
             </fieldset>
         </article>
     </main>

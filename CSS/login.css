@@ -31,6 +31,8 @@ legend {
 /* body styles */
 body {
     Font-family: Candara, Calibri, Segoe, Segoe UI, Optima, Arial, sans-serif;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 

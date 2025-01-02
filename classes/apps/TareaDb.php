@@ -6,8 +6,10 @@ class TareaDb extends Conex
     private $nombre;
     private $descripcion;
     private $fechaFin;
+    private $completada;
     private $idGrupo;
     private $idUsuario;
+
 
     public function __construct()
     {
@@ -34,7 +36,9 @@ class TareaDb extends Conex
     {
         return $this->idUsuario;
     }
-
+    public function getCompletada(){
+        return $this->completada;
+    }
     public function anadirTarea($nombre, $descripcion, $fechaFin, $idGrupo, $idUsuario)
     {
         $query = 'INSERT INTO tarea(nombre,descripcion,fechaFin,idGrupo,idUsuario) VALUES (:nombre,:descripcion,:fechaFin,:idGrupo,:idUsuario)';
@@ -101,7 +105,7 @@ class TareaDb extends Conex
     }
     public function seleccionarTarea($idTarea)
     {
-        $query = 'SELECT * FROM tarea WHERE idTarea=:idTarea AND idUsuario IS NULL';
+        $query = 'SELECT * FROM tarea WHERE idTarea=:idTarea';
         try {
             $selecionar = $this->conexBd->prepare($query);
             $selecionar->execute([':idTarea' => $idTarea]);
@@ -112,16 +116,30 @@ class TareaDb extends Conex
             echo 'Error al seleccionar el grupo: ' . $e->getMessage() . ', en la linea: ' . $e->getLine() . ', en el archivo: ' . $e->getFile();
         }
     }
-    public function seleccionarTareasGrupoUsuarios($idGrupo,$idUsuario)
+    public function seleccionarTareasGrupoUsuarios($idGrupo, $idUsuario)
     {
         $query = 'SELECT * FROM tarea WHERE idGrupo=:idGrupo AND idUsuario=:idUsuario';
         try {
             $selecionar = $this->conexBd->prepare($query);
-            $selecionar->execute([':idGrupo' => $idGrupo, ':idUsuario'=>$idUsuario]);
+            $selecionar->execute([':idGrupo' => $idGrupo, ':idUsuario' => $idUsuario]);
             $selecionar->setFetchMode(PDO::FETCH_CLASS, 'TareaDb');
             return $selecionar;
         } catch (PDOException $e) {
             echo 'Error al seleccionar el grupo: ' . $e->getMessage() . ', en la linea: ' . $e->getLine() . ', en el archivo: ' . $e->getFile();
         }
+    }
+    public function completarTarea($idTarea)
+    {
+        $sql = "UPDATE tarea SET completada = 1 WHERE idTarea = :idTarea";
+        $stmt = $this->conexBd->prepare($sql);
+        $stmt->bindParam(':idTarea', $idTarea, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+    public function descompletarTarea($idTarea)
+    {
+        $sql = "UPDATE tarea SET completada = 0 WHERE idTarea = :idTarea";
+        $stmt = $this->conexBd->prepare($sql);
+        $stmt->bindParam(':idTarea', $idTarea, PDO::PARAM_INT);
+        $stmt->execute();
     }
 }
