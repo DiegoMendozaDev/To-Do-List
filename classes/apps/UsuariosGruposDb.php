@@ -76,4 +76,17 @@ class UsuariosGruposDb extends Conex
             echo 'Error al seleccionar el todos los grupos del usuario: ' . $e->getMessage() . ', en la linea: ' . $e->getLine() . ', en el archivo: ' . $e->getFile();
         }
     }
+    public function seleccionarUsuarioGrupo($idGrupo,$idUsuario)
+    {
+        $query = 'SELECT * FROM usuarios_grupos WHERE idGrupo=:idGrupo AND idUsuario=:idUsuario';
+        try {
+            $selecionar = $this->conexBd->prepare($query);
+            $selecionar->execute([':idGrupo' => $idGrupo,':idUsuario' => $idUsuario]);
+            $selecionar->setFetchMode(PDO::FETCH_CLASS, 'UsuariosGruposDb');
+            $usuario = $selecionar->fetch();
+            return $usuario;
+        } catch (PDOException $e) {
+            echo 'Error al seleccionar el todos los usuarios del grupo: ' . $e->getMessage() . ', en la linea: ' . $e->getLine() . ', en el archivo: ' . $e->getFile();
+        }
+    }
 }

@@ -50,6 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         exit;
     } elseif (isset($_POST['eliminar'])) {
         $tareaDb->eliminarTarea($idTarea);
+        header('Location: ' . $_SERVER['PHP_SELF']);
+        exit;
     } elseif (isset($_POST['editar'])) {
         $tarea = $tareaDb->seleccionarTarea($idTarea);
         $nombreAc = $tarea->getNombre();
@@ -59,6 +61,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         exit;
     } elseif (isset($_POST['actualizar'])) {
         $tareaDb->editarTarea($idTarea, $nombre, $descripcion, $fechaFin);
+        header('Location: ' . $_SERVER['PHP_SELF']);
+        exit;
     } elseif (isset($_POST['irGrupo'])) {
         $_SESSION['grupo'] = $grupoNombre;
         header('Location: grupo.php');
@@ -139,6 +143,7 @@ $todasTareas = $tareaDb->seleccionarTareasUsuarios($usuario->getIdUsuario());
                 </div>
             <?php endif ?>
             </form>
+            <br>
             <?php if (!empty($errores)): ?>
                 <?php foreach ($errores as $error): ?>
                     <p class='errores'>*<?= $error ?></p>

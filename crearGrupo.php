@@ -36,8 +36,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (empty($errores)) {
 
             $gruposDb->anadirGrupo($nombre);
-            $grupo = $gruposDb->seleccionarGrupo($nombre);
+            $grupo = $gruposDb->seleccionarGrupoNombre($nombre);
             $usuariosGruposDb->anadirUsuariosGrupos($usuario->getIdUsuario(), $grupo->getIdGrupo(), true);
+            header('Location: index.php');
+            exit;
         }
     }
 }

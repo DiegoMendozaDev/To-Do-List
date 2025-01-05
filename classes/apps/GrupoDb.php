@@ -63,4 +63,17 @@ class GrupoDb extends Conex
             echo 'Error al seleccionar el grupo: ' . $e->getMessage() . ', en la linea: ' . $e->getLine() . ', en el archivo: ' . $e->getFile();
         }
     }
+    public function seleccionarGrupoNombre($nombre)
+    {
+        $query = 'SELECT * FROM grupo WHERE nombre=:nombre';
+        try {
+            $selecionar = $this->conexBd->prepare($query);
+            $selecionar->execute([':nombre' => $nombre]);
+            $selecionar->setFetchMode(PDO::FETCH_CLASS, 'GrupoDb');
+            $grupo = $selecionar->fetch();
+            return $grupo;
+        } catch (PDOException $e) {
+            echo 'Error al seleccionar el grupo: ' . $e->getMessage() . ', en la linea: ' . $e->getLine() . ', en el archivo: ' . $e->getFile();
+        }
+    }
 }
