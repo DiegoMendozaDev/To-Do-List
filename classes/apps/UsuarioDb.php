@@ -5,11 +5,11 @@ class UsuarioDb extends Conex
 
     private $idUsuario;
     private $nombre;
+    private $descripcion;
+    private $imagen;
     private $email;
     private $contrasena;
     private $token;
-    private $foto;
-    private $descripcion;
 
     public function __construct()
     {
@@ -35,6 +35,12 @@ class UsuarioDb extends Conex
     {
         return $this->nombre;
     }
+    public function getDescripcion(){
+        return $this->descripcion;
+    }
+    public function getImagen(){
+        return $this->imagen;
+    }
 
     public function anadirUsuario($nombre,$email, $contrasena)
     {
@@ -58,10 +64,30 @@ class UsuarioDb extends Conex
     }
     public function editarUsuarioEmail($email, $nuevoEmail)
     {
-        $query = 'UPDATE usuario SET email=:nuevoEmail WHERE email=:$email';
+        $query = 'UPDATE usuario SET email=:nuevoEmail WHERE email=:email';
         try {
             $actualizar = $this->conexBd->prepare($query);
             $actualizar->execute([':email' => $email, ':nuevoEmail' => $nuevoEmail]);
+        } catch (PDOException $e) {
+            echo 'Error al actualizar el email del usuario: ' . $e->getMessage() . ', en la linea: ' . $e->getLine() . ', en el archivo: ' . $e->getFile();
+        }
+    }
+    public function editarUsuarioFoto($idUsuario, $nuevoFoto)
+    {
+        $query = 'UPDATE usuario SET imagen=:nuevoFoto WHERE idUsuario=:idUsuario';
+        try {
+            $actualizar = $this->conexBd->prepare($query);
+            $actualizar->execute([':nuevoFoto' => $nuevoFoto, ':idUsuario'=> $idUsuario]);
+        } catch (PDOException $e) {
+            echo 'Error al actualizar el email del usuario: ' . $e->getMessage() . ', en la linea: ' . $e->getLine() . ', en el archivo: ' . $e->getFile();
+        }
+    }
+    public function editarUsuario($idUsuario, $nuevoNombre,$nuevaDescripcion)
+    {
+        $query = 'UPDATE usuario SET nombre=:nuevoNombre, descripcion=:nuevaDescripcion WHERE idUsuario=:idUsuario';
+        try {
+            $actualizar = $this->conexBd->prepare($query);
+            $actualizar->execute([':nuevoNombre' => $nuevoNombre, ':nuevaDescripcion' => $nuevaDescripcion, ':idUsuario'=> $idUsuario]);
         } catch (PDOException $e) {
             echo 'Error al actualizar el email del usuario: ' . $e->getMessage() . ', en la linea: ' . $e->getLine() . ', en el archivo: ' . $e->getFile();
         }

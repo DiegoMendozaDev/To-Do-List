@@ -42,6 +42,16 @@ class UsuariosGruposDb extends Conex
             echo 'Error al eliminar usuarios_grupos en la base de datos: ' . $e->getMessage() . ', en la linea: ' . $e->getLine() . ', en el archivo: ' . $e->getFile();
         }
     }
+    public function eliminarUsuarios($idGrupo)
+    {
+        $query = 'DELETE FROM usuarios_grupos WHERE idGrupo=:idGrupo';
+        try {
+            $eliminar = $this->conexBd->prepare($query);
+            $eliminar->execute([':idGrupo' => $idGrupo]);
+        } catch (PDOException $e) {
+            echo 'Error al eliminar usuarios_grupos en la base de datos: ' . $e->getMessage() . ', en la linea: ' . $e->getLine() . ', en el archivo: ' . $e->getFile();
+        }
+    }
     public function editarUsuariosGrupos($idUsuario, $idGrupo, $admin)
     {
         $query = 'UPDATE usuarios_grupos SET admin=:admin WHERE idUsuario=:idUsuario AND idGrupo=:idGrupo';
@@ -54,7 +64,7 @@ class UsuariosGruposDb extends Conex
     }
     public function seleccionarUsuariosGrupos($idGrupo)
     {
-        $query = 'SELECT * FROM usuarios_grupos WHERE idGrupo=:idGrupo';
+        $query = 'SELECT * FROM usuarios_grupos,usuario WHERE usuarios_grupos.idUsuario = usuario.idUsuario AND idGrupo=:idGrupo';
         try {
             $selecionar = $this->conexBd->prepare($query);
             $selecionar->execute([':idGrupo' => $idGrupo]);

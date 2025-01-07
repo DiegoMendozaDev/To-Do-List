@@ -36,7 +36,8 @@ class TareaDb extends Conex
     {
         return $this->idUsuario;
     }
-    public function getCompletada(){
+    public function getCompletada()
+    {
         return $this->completada;
     }
     public function anadirTarea($nombre, $descripcion, $fechaFin, $idGrupo, $idUsuario)
@@ -59,6 +60,26 @@ class TareaDb extends Conex
             echo 'Error al eliminar tarea en la base de datos: ' . $e->getMessage() . ', en la linea: ' . $e->getLine() . ', en el archivo: ' . $e->getFile();
         }
     }
+    public function eliminarTareaGrupo($idGrupo)
+    {
+        $query = 'DELETE FROM tarea WHERE idGrupo=:idGrupo';
+        try {
+            $eliminar = $this->conexBd->prepare($query);
+            $eliminar->execute([':idGrupo' => $idGrupo]);
+        } catch (PDOException $e) {
+            echo 'Error al eliminar tarea en la base de datos: ' . $e->getMessage() . ', en la linea: ' . $e->getLine() . ', en el archivo: ' . $e->getFile();
+        }
+    }
+    public function eliminarTareaGrupoUsuario($idGrupo,$idUsuario)
+    {
+        $query = 'DELETE FROM tarea WHERE idGrupo=:idGrupo AND idUsuario=:idUsuario';
+        try {
+            $eliminar = $this->conexBd->prepare($query);
+            $eliminar->execute([':idGrupo' => $idGrupo, ':idUsuario' => $idUsuario]);
+        } catch (PDOException $e) {
+            echo 'Error al eliminar tarea en la base de datos: ' . $e->getMessage() . ', en la linea: ' . $e->getLine() . ', en el archivo: ' . $e->getFile();
+        }
+    }
     public function editarTarea($idTarea, $nombre, $descripcion, $fechaFin)
     {
         $query = 'UPDATE tarea SET nombre=:nombre,descripcion=:descripcion,fechaFin=:fechaFin WHERE idTarea=:idTarea';
@@ -74,7 +95,7 @@ class TareaDb extends Conex
         $query = 'UPDATE tarea SET nombre=:nombre,descripcion=:descripcion,fechaFin=:fechaFin WHERE idTarea=:idTarea';
         try {
             $actualizar = $this->conexBd->prepare($query);
-            $actualizar->execute([':idTarea' => $idTarea, ':nombre' => $nombre, ':descripcion' => $descripcion, ':fechaFin' => $fechaFin, ':idUsuario' => $idUsuario]);
+            $actualizar->execute([':nombre' => $nombre, ':descripcion' => $descripcion, ':fechaFin' => $fechaFin, ':idTarea' => $idTarea]);
         } catch (PDOException $e) {
             echo 'Error al actualizar el nombre del grupo: ' . $e->getMessage() . ', en la linea: ' . $e->getLine() . ', en el archivo: ' . $e->getFile();
         }

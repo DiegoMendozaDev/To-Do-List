@@ -5,6 +5,7 @@ require 'functions/verSession.php';
 require 'classes/apps/GrupoDb.php';
 require 'classes/apps/UsuariosGruposDb.php';
 //Variables
+$session = $token = '';
 $errores = [];
 $usuarioDb = new UsuarioDb();
 $grupoDb = new GrupoDb();
@@ -39,13 +40,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         //Validaciones de los campos
         if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $errores[] = 'Tienes que introducir un email válido';
-        } elseif($usuariosGruposDb->seleccionarUsuarioGrupo($grupo->getIdGrupo(),$usuario->getIdUsuario())){
+        } elseif (!$usuario) {
+            $errores[] = 'Usuario no válido';
+        } elseif ($usuariosGruposDb->seleccionarUsuarioGrupo($grupo->getIdGrupo(), $usuario->getIdUsuario())) {
             $errores[] = 'Este usuario ya está en el grupo';
         }
         //Si no hay errores se registra
         if (empty($errores)) {
             $usuario = $usuarioDb->seleccionarUsuario($email);
-            $usuariosGruposDb->anadirUsuariosGrupos($usuario->getIdUsuario(),$grupo->getIdGrupo(),false);
+            $usuariosGruposDb->anadirUsuariosGrupos($usuario->getIdUsuario(), $grupo->getIdGrupo(), false);
             header('Location: grupo.php');
             exit;
         }
